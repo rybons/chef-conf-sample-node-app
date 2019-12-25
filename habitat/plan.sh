@@ -25,16 +25,17 @@ pkg_deps=(core/node)
 # to install dependencies and assemble the application package.
 
 do_build() {
+  pushd ${PLAN_CONTEXT}/..
 
-  # By default, we're in the directory in which the Studio was entered
-  # (in this case, presumably the project root), so we can run commands
-  # as though we were in that same directory. By the time we reach this
-  # callback, `npm` will have been installed for us.
+  # Use $PLAN_CONTEXT to ensure we're in the root of this project directory.
+  # By the time we reach this callback, `npm` will have been installed for us.
   npm install
+
+  popd
 }
 
 do_install() {
-
+  pushd ${PLAN_CONTEXT}/..
   # The `pkg_prefix` variable contains the fully-qualified Studio-relative path to
   # a specific build run (e.g., /hab/pkgs/<YOUR_ORIGIN>/sample-node-app/1.1.0/20180620174915).
   # In this callback, we copy the files that our application requires at runtime
@@ -52,4 +53,6 @@ do_install() {
     app.js \
     index.js \
     $app_path
+
+  popd
 }
